@@ -17,6 +17,35 @@ class Admin::ApiController < Admin::AdminController
     render_serialized(keys.to_a, ApiKeySerializer, root: 'keys')
   end
 
+  def search_endpoints
+    query = params[:q].to_s
+
+    if query.present?
+      scopes = Rails.application.routes.routes.flat_map do |route|
+        defaults = route.defaults
+        action = "#{defaults[:controller].to_s.camelize}##{defaults[:action]}"
+        path = route.path.spec.to_s.gsub(/\(\.:format\)/, '')
+
+        next if (
+          defaults[:controller].blank? ||
+          defaults[:controller].to_s.include?('rails') ||
+          defaults[:controller].to_s.include?('exceptions') ||
+          !action.downcase.to_s.include?(query) ||
+          !path.include?(query)
+        )
+
+        {
+          method: route.verb,
+          action: action,
+          path: route.path.spec.to_s.gsub(/\(\.:format\)/, ''),
+          parameters: route.path.required_names
+        }
+      end.compact
+    end
+
+    render json: (scopes || [])
+  end
+
   def show
     api_key = ApiKey.find_by!(id: params[:id])
     render_serialized(api_key, ApiKeySerializer, root: 'key')

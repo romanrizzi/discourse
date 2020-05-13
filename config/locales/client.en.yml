@@ -3533,6 +3533,17 @@ en:
         single_user: "Single User"
         user_placeholder: Enter username
         description_placeholder: What will this key be used for?
+        no_scopes: No, allow every endpoint
+        complex_scopes: Yes, allow specific parameters
+        use_scopes: Use Scopes
+        new_scope: New Scope
+        selected_scopes: Selected Scopes
+        scopes: Scopes
+        scope_attributes:
+          action: Action
+          path: Path
+          method: Method
+          allowed_parameters: Allowed Parameters
         save: Save
         new_key: New API Key
         revoked: Revoked

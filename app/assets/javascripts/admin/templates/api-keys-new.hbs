@@ -31,8 +31,60 @@
           }}
       {{/admin-form-row}}
     {{/if}}
-    {{#admin-form-row}}
-      {{d-button icon="check" label="admin.api.save" action=(action "save") class="btn-primary" disabled=saveDisabled}}
+
+    {{#admin-form-row label="admin.api.use_scopes"}}
+      {{combo-box content=scopesMode value=useScopes onChange=(action (mut useScopes))}}
     {{/admin-form-row}}
+
+    {{#if showScopes}}
+      {{#admin-form-row label="admin.api.new_scope"}}
+        {{combo-box
+          search=searchEndpoints
+          options=(hash autoFilterable=true)
+          value=scopeID
+          onChange=(action "setScope")
+          }}
+        {{d-button icon="plus" action=(action "buildScope") class="btn-primary"}}
+      {{/admin-form-row}}
+
+      <br>
+      <h2>{{i18n "admin.api.selected_scopes"}}</h2>
+
+      <table>
+        <thead>
+          <th>{{i18n "admin.api.scope_attributes.action"}}</th>
+          <th>{{i18n "admin.api.scope_attributes.path"}}</th>
+          <th>{{i18n "admin.api.scope_attributes.method"}}</th>
+          {{#if complexScopes}}
+            <th>{{i18n "admin.api.scope_attributes.allowed_parameters"}}</th>
+          {{/if}}
+          <th></th>
+        </thead>
+        <tbody>
+          {{#each model.scopes as |scope|}}
+            <tr>
+              <td>{{scope.action}}</td>
+              <td>{{scope.path}}</td>
+              <td>{{scope.method}}</td>
+              {{#if complexScopes}}
+                <td>
+                  {{#each scope.parameters as |p|}}
+                    <div>
+                      {{input value=(get scope p) maxlength="255" placeholder=p}}
+                    </div>
+                  {{/each}}
+                </td>
+              {{/if}}
+              <td>
+                {{d-button icon="times" action=(action "removeScope" scope) class="btn-danger"}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{/if}}
+
+    <br>
+    {{d-button icon="check" label="admin.api.save" action=(action "save") class="btn-primary" disabled=saveDisabled}}
   {{/if}}
 </div>

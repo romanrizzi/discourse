@@ -267,6 +267,7 @@ Discourse::Application.routes.draw do
     resources :api, only: [:index], constraints: AdminConstraint.new do
       collection do
         resources :keys, controller: 'api', only: [:index, :show, :update, :create, :destroy] do
+          collection { get 'search_endpoints' }
           member do
             post "revoke" => "api#revoke_key"
             post "undo-revoke" => "api#undo_revoke_key"
